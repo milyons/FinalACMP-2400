@@ -23,6 +23,9 @@ jobs:
           sleep 10
           docker logs django-test 
 
-      - name: Test Web Response
+- name: Test Web Response
         run: |
+          # This will print the first 10 lines of the page even if it fails
+          curl http://localhost:8000 || echo "CURL FAILED"
+          # Then do the actual check
           curl --silent --fail http://localhost:8000 | grep -i "hello world"
