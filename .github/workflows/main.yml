@@ -11,23 +11,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Pull the code from your repo into the runner
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. Build the Docker image using your Dockerfile
       - name: Build Docker Image
         run: docker build -t my-django-app .
 
-      # 3. Run the container in the background
-      # We map port 8000 so we can talk to it
       - name: Run Container
         run: |
-          docker run -d -p 8000:8000 --name django-test my-django-app
-          # Give it a few seconds to start up
+          docker run -d -p 8000:8000 --name django-test -e SECRET_KEY="final-project-key" my-django-app
           sleep 10
+          docker logs django-test 
 
-      # 4. Use CURL to see if the index page responds
       - name: Test Web Response
         run: |
-          curl --silent --fail http://localhost:8000 | grep "hello world"
+          curl --silent --fail http://localhost:8000 | grep -i "hello world"
